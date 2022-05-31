@@ -19,13 +19,13 @@ func NewPool(maxGoroutine uint) *Pool {
 			for {
 				w, ok := <-pool.work
 				if !ok {
-					return
+					break
 				}
 				w.work()
-
 			}
+			pool.wg.Done()
 		}()
-		pool.wg.Done()
+
 	}
 
 	return pool
@@ -36,13 +36,6 @@ func (p *Pool) Run(fun func()) {
 }
 
 func (p *Pool) ShutdownGracefully() {
-
-	for {
-		if len(p.work) == 0 {
-			break
-		}
-	}
-
 	close(p.work)
 	p.wg.Wait()
 }

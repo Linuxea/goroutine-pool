@@ -7,8 +7,10 @@ import (
 
 func TestPool(t *testing.T) {
 
-	p := NewPool(1)
-	for i := 0; i < 30; i++ {
+	p := NewPool(10)
+	defer p.ShutdownGracefully()
+
+	for i := 0; i < 300000; i++ {
 		func(ii int) {
 			p.Run(func() {
 				fmt.Println(ii)
@@ -16,5 +18,4 @@ func TestPool(t *testing.T) {
 		}(i)
 	}
 
-	p.ShutdownGracefully()
 }
