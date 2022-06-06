@@ -16,11 +16,7 @@ func NewPool(maxGoroutine uint) *Pool {
 	pool.wg.Add(int(maxGoroutine))
 	for i := 0; i < int(maxGoroutine); i++ {
 		go func() {
-			for {
-				w, ok := <-pool.work
-				if !ok {
-					break
-				}
+			for w := range pool.work {
 				w.work()
 			}
 			pool.wg.Done()
